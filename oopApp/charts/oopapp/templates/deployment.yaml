@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "oopapp.fullname" . }}
+  labels:
+    app: {{ include "oopapp.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "oopapp.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "oopapp.name" . }}
+    spec:
+      containers:
+        - name: oopapp
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector-otel-collector:4317"
+            - name: OTEL_SERVICE_NAME
+              value: "oopapp"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=oopapp"
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+

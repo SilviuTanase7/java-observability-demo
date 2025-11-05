@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  repository: otel/opentelemetry-collector
+  tag: 0.108.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 4317  # Default OTLP gRPC port
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 300m
+    memory: 256Mi
+
+telemetry:
+  metrics:
+    address: "0.0.0.0:9464"
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+        http:
+          endpoint: "0.0.0.0:4318"
+
+  exporters:
+    prometheus:
+      endpoint: "0.0.0.0:9464"
+    logging:
+      verbosity: normal
+
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        exporters: [logging]
+      metrics:
+        receivers: [otlp]
+        exporters: [prometheus, logging]
+      logs:
+        receivers: [otlp]
+        exporters: [logging]

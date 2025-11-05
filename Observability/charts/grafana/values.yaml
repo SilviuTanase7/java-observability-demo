@@ -1,0 +1,39 @@
+replicaCount: 1
+
+image:
+  repository: grafana/grafana
+  tag: 9.5.2
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30080  # între 30000 și 32767
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-prometheus:9090  # Use the full service name of Prometheus here
+        access: proxy
+        isDefault: true
+
+admin:
+  existingSecret: grafana-admin-creds
+  userKey: admin-user
+  passwordKey: admin-password
+
+persistence:
+  enabled: true
+  existingClaim: grafana-pvc
+

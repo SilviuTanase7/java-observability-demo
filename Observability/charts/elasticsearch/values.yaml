@@ -1,0 +1,35 @@
+# Observability/elasticsearch/values.yaml
+
+replicas: 1
+
+# Keep it small for Docker Desktop
+resources:
+  requests:
+    cpu: "200m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
+volumeClaimTemplate:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 5Gi
+  # Docker Desktop supports hostpath
+  storageClassName: hostpath
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+service:
+  type: NodePort
+  nodePort: 30920
+  port: 9200
+
+# Security can be turned off for local testing
+# (recommended: disable for localhost only)
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: false
