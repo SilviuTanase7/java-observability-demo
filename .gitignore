@@ -1,0 +1,35 @@
+
+---
+
+### ⚙️ `.gitignore`
+```gitignore
+# Java / Maven / Gradle
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.iml
+*.swp
+.DS_Store
+
+# OS files
+Thumbs.db
+
+# Environment & Config
+.env
+application.properties
+application.yml
+
+# Docker
+*.pid
+docker-compose.override.yml
